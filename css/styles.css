@@ -1,3 +1,13 @@
+:root {
+    color-scheme: light;
+    --blue: #1464f4;
+    --track: #edf1f5;
+    --text: #111111;
+    --switch-off: #e2e9f2;
+    --page: #eef3f7;
+    --white: #ffffff;
+}
+
 * {
     box-sizing: border-box;
 }
@@ -6,4 +16,148 @@ html,
 body {
     min-height: 100%;
     margin: 0;
+}
+
+body {
+    min-height: 100svh;
+    font-family: Arial, Helvetica;
+    color: var(--text);
+    background: var(--page);
+}
+
+button,
+input {
+    font: inherit;
+}
+
+.demo {
+    min-height: 100svh;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+}
+
+.demo__card {
+    width: min(100%, 520px);
+    min-height: 100%;
+    padding: 24px;
+    background: var(--white);
+}
+
+.demo__title {
+    margin: 0;
+    font-size: 20px;
+    line-height: 24px;
+    font-weight: 500;
+}
+
+.demo__content {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 48px;
+    min-height: 360px;
+}
+
+.progress-host {
+    display: grid;
+}
+
+.progress {
+    width: clamp(160px, 42vw, 190px);
+}
+
+.progress__svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.progress__track,
+.progress__value {
+    fill: none;
+    stroke-width: 12;
+}
+
+.progress__track {
+    stroke: var(--track);
+}
+
+.progress__value {
+    stroke: var(--blue);
+}
+
+.controls {
+    display: grid;
+    gap: 10px;
+    min-width: 120px;
+}
+
+.control {
+    min-height: 32px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    cursor: pointer;
+}
+
+.control__label {
+    order: 2;
+    font-size: 18px;
+    line-height: 24px;
+    user-select: none;
+}
+
+.value-input {
+    width: 50px;
+    height: 36px;
+    order: 1;
+    padding: 0 8px;
+    border: 1px solid #111111;
+    border-radius: 9px;
+    outline: none;
+    text-align: center;
+    font-size: 14px;
+    line-height: 10px;
+}
+
+.value-input:focus-visible {
+    box-shadow: 0 0 0 2px rgba(20, 100, 244, 0.25);
+}
+
+.switch__input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.switch {
+    position: relative;
+    order: 1;
+    width: 52px;
+    height: 32px;
+    flex: 0 0 52px;
+    border-radius: 99px;
+    transition: background-color 160ms ease;
+}
+
+.switch__thumb {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #ffffff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.switch__input:checked+.switch {
+    background: var(--blue);
+}
+
+.switch__input:checked+.switch .switch__thumb {
+    transform: translateX(20px);
 }

@@ -9,6 +9,31 @@
 </head>
 
 <body>
+    <main class="demo">
+        <section class="demo__card">
+            <h1 id="progress-title" class="demo__title">Progress ozon</h1>
+            <div class="demo__content">
+                <div id="progress-root" class="progress-host"></div>
+                <form class="controls" id="controls" novalidate>
+                    <label class="control control--value">
+                        <input id="value-input" class="value-input" name="value" type="number" min="0" max="100"
+                            step="1" inputmode="numeric" value="60" aria-label="Value">
+                        <span class="control__label">Значение</span>
+                    </label>
+                    <label class="control">
+                        <span class="control__label">Анимация</span>
+                        <input id="animate-input" class="switch__input" type="checkbox" aria-label="Animate">
+                        <span class="switch" aria-hidden="true"><span class="switch__thumb"></span></span>
+                    </label>
+                    <label class="control">
+                        <span class="control__label">Спрятать</span>
+                        <input id="hide-input" class="switch__input" type="checkbox" aria-label="Hide">
+                        <span class="switch" aria-hidden="true"><span class="switch__thumb"></span></span>
+                    </label>
+                </form>
+            </div>
+        </section>
+    </main>
 
     <script type="module" src="./js/app.js"></script>
 </body>
