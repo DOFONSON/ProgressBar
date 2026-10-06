@@ -1,57 +1,60 @@
-'use strict';
+import { Progress } from './progress.js';
 
-const RADIUS = 52;
-const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
+const valueInput = document.querySelector('#value-input');
+const animateInput = document.querySelector('#animate-input');
+const hideInput = document.querySelector('#hide-input');
+const progressRoot = document.querySelector('#progress-root');
+const controls = document.querySelector('#controls');
 
-function createProgress() {
-    const NS = 'http://www.w3.org/2000/svg';
+const progress = new Progress(progressRoot, {
+    value: Number(valueInput.value),
+    animated: animateInput.checked,
+    hidden: hideInput.checked,
+});
 
-    const svg = document.createElementNS(NS, 'svg');
-    svg.setAttribute('class', 'progress__svg');
-    svg.setAttribute('viewBox', '0 0 120 120');
-    svg.setAttribute('role', 'img');
-    svg.setAttribute('aria-label', 'Прогресс');
+function updateValue() {
+    const rawValue = valueInput.value.trim();
 
-    const track = document.createElementNS(NS, 'circle');
-    track.setAttribute('class', 'progress__track');
-    track.setAttribute('cx', '60');
-    track.setAttribute('cy', '60');
-    track.setAttribute('r', String(RADIUS));
+    if (rawValue === '') {
+        valueInput.setCustomValidity('Введите число от 0 до 100');
+        return;
+    }
 
-    const value = document.createElementNS(NS, 'circle');
-    value.setAttribute('class', 'progress__value');
-    value.setAttribute('cx', '60');
-    value.setAttribute('cy', '60');
-    value.setAttribute('r', String(RADIUS));
-    value.setAttribute('stroke-dasharray', String(CIRCUMFERENCE));
-    value.setAttribute('stroke-dashoffset', String(CIRCUMFERENCE));
+    const value = Number(rawValue);
+    const isValid = Number.isFinite(value) && value >= 0 && value <= 100;
 
-    svg.append(track, value);
+    valueInput.setCustomValidity(
+        isValid ? '' : 'Введите число от 0 до 100'
+    );
 
-    return { svg, valueCircle: value };
+    if (isValid) {
+        progress.setValue(value);
+    }
 }
 
-function setProgress(circle, percent) {
-    const clamped = Math.min(100, Math.max(0, percent));
-    const offset = CIRCUMFERENCE * (1 - clamped / 100);
-    circle.setAttribute('stroke-dashoffset', String(offset));
-}
+valueInput.addEventListener('input', updateValue);
 
-const root = document.getElementById('progress-root');
-const valueInput = document.getElementById('value-input');
+valueInput.addEventListener('blur', () => {
+    const value = progress.getValue();
+    valueInput.value = String(value);
+    valueInput.setCustomValidity('');
+});
 
-const { svg, valueCircle } = createProgress();
+valueInput.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+        event.preventDefault();
 
-const progressEl = document.createElement('div');
-progressEl.className = 'progress';
-progressEl.append(svg);
-root.append(progressEl);
-
-setProgress(valueCircle, Number(valueInput.value) || 0);
-
-valueInput.addEventListener('input', () => {
-    const val = Number(valueInput.value);
-    if (Number.isFinite(val)) {
-        setProgress(valueCircle, val);
+        updateValue();
+        valueInput.blur();
     }
 });
+
+animateInput.addEventListener('change', () => {
+    progress.setAnimated(animateInput.checked);
+});
+
+hideInput.addEventListener('change', () => {
+    progress.setHidden(hideInput.checked);
+});
+
+window.progress = progress;

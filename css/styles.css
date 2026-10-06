@@ -20,9 +20,10 @@ body {
 
 body {
     min-height: 100svh;
-    font-family: Arial, Helvetica;
+    font-family: Arial, Helvetica, sans-serif;
     color: var(--text);
     background: var(--page);
+    -webkit-font-smoothing: antialiased;
 }
 
 button,
@@ -56,21 +57,33 @@ input {
     grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
     gap: 48px;
-    min-height: 360px;
+    min-height: 480px;
 }
 
 .progress-host {
     display: grid;
+    place-items: center;
+    min-width: 0;
 }
 
 .progress {
     width: clamp(160px, 42vw, 190px);
+    aspect-ratio: 1;
+    transition: opacity 160ms ease;
+}
+
+.progress--hidden {
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
 }
 
 .progress__svg {
     display: block;
     width: 100%;
     height: 100%;
+    overflow: visible;
+    transform: rotate(-90deg);
 }
 
 .progress__track,
@@ -85,12 +98,40 @@ input {
 
 .progress__value {
     stroke: var(--blue);
+    stroke-linecap: butt;
+    transition: stroke-dashoffset 180ms ease-out;
+}
+
+.progress__svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+
+    transform: rotate(-90deg);
+
+    animation: progress-rotate 1.4s linear infinite;
+    animation-play-state: paused;
+}
+
+.progress:not(.progress--animation-paused) .progress__svg {
+    animation-play-state: running;
+}
+
+@keyframes progress-rotate {
+    from {
+        transform: rotate(-90deg);
+    }
+
+    to {
+        transform: rotate(270deg);
+    }
 }
 
 .controls {
     display: grid;
-    gap: 10px;
-    min-width: 120px;
+    gap: 16px;
+    min-width: 140px;
 }
 
 .control {
@@ -108,21 +149,36 @@ input {
     user-select: none;
 }
 
+.control--value {
+    cursor: text;
+}
+
 .value-input {
-    width: 50px;
+    width: 54px;
     height: 36px;
     order: 1;
     padding: 0 8px;
     border: 1px solid #111111;
-    border-radius: 9px;
+    border-radius: 18px;
     outline: none;
     text-align: center;
-    font-size: 14px;
-    line-height: 10px;
+    font-size: 16px;
+    line-height: 20px;
+    appearance: textfield;
+}
+
+.value-input::-webkit-outer-spin-button,
+.value-input::-webkit-inner-spin-button {
+    margin: 0;
+    appearance: none;
 }
 
 .value-input:focus-visible {
     box-shadow: 0 0 0 2px rgba(20, 100, 244, 0.25);
+}
+
+.value-input:invalid {
+    border-color: #d93025;
 }
 
 .switch__input {
@@ -139,7 +195,8 @@ input {
     width: 52px;
     height: 32px;
     flex: 0 0 52px;
-    border-radius: 99px;
+    border-radius: 999px;
+    background: var(--switch-off);
     transition: background-color 160ms ease;
 }
 
@@ -147,11 +204,12 @@ input {
     position: absolute;
     top: 2px;
     left: 2px;
-    width: 14px;
-    height: 14px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
     background: #ffffff;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    transition: transform 160ms ease;
 }
 
 .switch__input:checked+.switch {
@@ -160,4 +218,64 @@ input {
 
 .switch__input:checked+.switch .switch__thumb {
     transform: translateX(20px);
+}
+
+.switch__input:focus-visible+.switch {
+    box-shadow: 0 0 0 2px rgba(20, 100, 244, 0.25);
+}
+
+@media (orientation: portrait) and (max-width: 600px) {
+    .demo {
+        padding: 0;
+        place-items: stretch;
+    }
+
+    .demo__card {
+        width: 100%;
+        min-height: 100svh;
+        padding: 24px;
+    }
+
+    .demo__content {
+        grid-template-columns: 1fr;
+        grid-template-rows: minmax(260px, 1fr) auto;
+        gap: 32px;
+        min-height: calc(100svh - 48px);
+        align-items: center;
+    }
+
+    .controls {
+        justify-self: center;
+        width: 164px;
+        padding-bottom: 16px;
+    }
+}
+
+@media (orientation: landscape) {
+    .demo {
+        padding: 0;
+    }
+
+    .demo__card {
+        width: min(100%, 900px);
+        min-height: 100svh;
+        padding: 24px;
+    }
+
+    .demo__content {
+        min-height: calc(100svh - 48px);
+        grid-template-columns: minmax(260px, 1fr) auto;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .progress--animated .progress__svg {
+        animation-duration: 4s;
+    }
+
+    .progress__value,
+    .switch,
+    .switch__thumb {
+        transition: none;
+    }
 }
